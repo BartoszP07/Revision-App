@@ -19,9 +19,9 @@ class Button(Widget):
     def __init__(self, multX=1, multY=1, posX=100, posY=100, width=350, height=100,
                  colours=None, alpha=255, text="Button", font=None, shadow=True,
                  curve=0, border=0, offset=(0, 0), shadowOffset=(-3, 3), textOffset=(0, 0),
-                 textShadowOffset=(-5, 5), textSizeMultiplier=1,
+                 textShadowOffset=(-5, 5), textSizeMultiplier=1, prioritiseSprite=True,
                  shadowAlpha=100, visible=True, active=True, textPosition="center", drawBackground=True,
-                 command=None, parameters=None, pressSound=None):
+                 command=None, parameters=None, pressSound=None, sprite=None):
         if colours is None:
             colours = DEFAULTCOLOURS
         if font is None:
@@ -30,7 +30,7 @@ class Button(Widget):
                          colours, alpha, text, font, shadow,
                          curve, border, offset, shadowOffset,
                          textOffset, textShadowOffset, textSizeMultiplier,
-                         shadowAlpha, visible,
+                         sprite, shadowAlpha, visible,
                          active, textPosition, drawBackground)
         
         self.command = command
@@ -41,6 +41,17 @@ class Button(Widget):
         self.keepPressColour = False
         self.didKeepPressColour = False
         self.highlighted = False
+        self.prioritiseSprite = prioritiseSprite
+        self.sprite = sprite
+        if self.sprite:
+            self.spriteAlphaSurf = pygame.mask.from_surface(self.sprite)
+            if self.prioritiseSprite:
+                self.width = self.sprite.get_width()
+                self.height = self.sprite.get_height()
+                self.rect.width = self.width
+                self.rect.height = self.height
+                self.updateSize(1, 1, 1, 1)
+            
         
     # Procedure to change the text
     def changeText(self, text):
@@ -72,6 +83,42 @@ class Button(Widget):
         if self.pressSound:
             self.pressSound.play()
 
+    # Procedure to update the button if its a regular rect
+    def UpdateRectColours(self, pressing):
+         # Check if the rect is colliding
+        if self.colliding or self.highlighted:
+            self.colour = self.changeBrightness(self.colours["col1"], 1.2)
+            if pressing and self.canPress:
+                self.colour = self.changeBrightness(self.colours["col1"], 0.8)
+                self.keepPressColour = True
+                self.didKeepPressColour = True
+        else:
+            self.colour = self.colours["col1"]
+        
+        # Keep the press colour if the button is pressed, even if not colliding
+        if self.keepPressColour and pressing:
+            self.colour = self.changeBrightness(self.colours["col1"], 0.8)
+
+    # Procedure to update the button if its a sprite
+    def UpdateSpriteColours(self, pressing):
+        # Check if the rect is colliding
+        if self.colliding or self.highlighted:
+            # Make the sprite brighter
+            self.black_sprite.set_alpha(0)
+            self.white_sprite.set_alpha(100)
+            if pressing and self.canPress:
+                self.white_sprite.set_alpha(0)
+                self.black_sprite.set_alpha(100)
+                self.keepPressColour = True
+                self.didKeepPressColour = True
+        else:
+            self.black_sprite.set_alpha(0)
+            self.white_sprite.set_alpha(0)
+        
+        if self.keepPressColour and pressing:
+            self.black_sprite.set_alpha(100)
+            self.white_sprite.set_alpha(0)
+
     # Procedure to update the button -- override the parent class method
     def update(self, rects, pressing):
         if not self.visible: return
@@ -85,20 +132,11 @@ class Button(Widget):
         if not pressing:
             self.canPress = True
             self.keepPressColour = False
-
-        # Check if the rect is colliding
-        if self.colliding or self.highlighted:
-            self.colour = self.changeBrightness(self.colours["col1"], 1.2)
-            if pressing and self.canPress:
-                self.colour = self.changeBrightness(self.colours["col1"], 0.8)
-                self.keepPressColour = True
-                self.didKeepPressColour = True
+       
+        if self.sprite:
+            self.UpdateSpriteColours(pressing)
         else:
-            self.colour = self.colours["col1"]
-        
-        # Keep the press colour if the button is pressed, even if not colliding
-        if self.keepPressColour and pressing:
-            self.colour = self.changeBrightness(self.colours["col1"], 0.8)
+            self.UpdateRectColours(pressing)
 
         # Check if the mouse has been released
         if not self.keepPressColour and self.didKeepPressColour:

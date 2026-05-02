@@ -18,7 +18,7 @@ class Widget:
     def __init__(self, multX=1, multY=1, posX=0, posY=0, width=200, height=100,
                 colours=DEFAULTCOLOURS, alpha=255, text="", font=BASEFONT, shadow=False,
                 curve=0, border=0, offset=(0, 0), shadowOffset=(0, 0), textOffset=(0, 0),
-                textShadowOffset=(-5, 5), textSizeMultiplier=1,
+                textShadowOffset=(-5, 5), textSizeMultiplier=1, sprite=None,
                 shadowAlpha=100, visible=True, active=True, textPosition="center", drawBackground=True):
         # Initialize the widget properties
         self.multX = multX
@@ -48,6 +48,10 @@ class Widget:
         self.active = active
         self.drawBackground = drawBackground
         self.textPosition = textPosition
+        self.sprite = sprite
+        if self.sprite:
+            self.black_sprite = self.CreateSpriteSurface(self.sprite, (0, 0, 0), 0)
+            self.white_sprite = self.CreateSpriteSurface(self.sprite, (255, 255, 255), 0)
         # Create extra variables
         self.setInitialSize = False
         self.textObj = self.createTextSurface(self.alpha)
@@ -65,6 +69,13 @@ class Widget:
         self.scroll = pygame.Vector2(0, 0)
         self.originalBorder, self.originalCurve = border, curve
         self.updateSize(1, 1, self.multX, self.multY)
+        
+    # Function to create a mask a sprite and make it into a surface
+    def CreateSpriteSurface(self, sprite, col=(0, 0, 0), alpha=255):
+        mask = pygame.mask.from_surface(sprite)
+        silhouette = mask.to_surface(setcolor=col, unsetcolor=(1,2,3,0))
+        silhouette.set_alpha(alpha)
+        return silhouette.convert_alpha()
         
     # Fucntion to update the position of the widget
     def ChangePosition(self, x, y):
@@ -198,9 +209,15 @@ class Widget:
 
         # Background
         if self.shadow:
-            self.rectShadow = self.createBackgroundSurface(self.shadowAlpha, shadow=True)
-            screen.blit(self.rectShadow, (self.rect.x + self.shadowOffset[0],
+            if not self.sprite:
+                self.rectShadow = self.createBackgroundSurface(self.shadowAlpha, shadow=True)
+                screen.blit(self.rectShadow, (self.rect.x + self.shadowOffset[0],
                                           self.rect.y + self.shadowOffset[1]))
+            else:
+                self.rectShadow = self.CreateSpriteSurface(self.sprite, (0, 0, 0), self.shadowAlpha)
+                screen.blit(self.rectShadow, (self.rect.x + self.shadowOffset[0],
+                                          self.rect.y + self.shadowOffset[1]))
+            
         if self.drawBackground:
             self.surface = self.createBackgroundSurface(self.alpha)
             screen.blit(self.surface, (self.rect.x, self.rect.y)) 
@@ -214,5 +231,8 @@ class Widget:
         screen.blit(self.textObj, (textPos[0] + self.textOffset[0] + self.scroll.x,
                                    textPos[1] + self.textOffset[1] + self.scroll.y))
 
-
-
+        # Sprite
+        if self.sprite:
+            screen.blit(self.sprite, (self.rect.x, self.rect.y))
+            screen.blit(self.black_sprite, (self.rect.x, self.rect.y))
+            screen.blit(self.white_sprite, (self.rect.x, self.rect.y))

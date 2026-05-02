@@ -29,7 +29,7 @@ class Text(Widget):
         super().__init__(multX, multY, posX, posY, width, height,
                          colours, alpha, text, font, shadow,
                          curve, border, offset, shadowOffset,
-                         textOffset, textShadowOffset, textSizeMultiplier,
+                         textOffset, textShadowOffset, textSizeMultiplier, None,
                          shadowAlpha, visible, True, textPosition, drawBackground)
         
         self.textObjs = []

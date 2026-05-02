@@ -1,21 +1,35 @@
 # Import modules
 import pygame, sys, time
 from scripts import *
+from scripts.screens import *
 
 class App:
     def __init__(self):
+        # Initialise the data handler
+        self.data_handler = DataHandler()
+        # Load colours to be used
+        self.colours = self.data_handler.LoadJSON("data/colours.json")
         screenW, screenH = 500, 500
         self.screen = pygame.display.set_mode((screenW, screenH))
         pygame.display.set_caption("Revision")
         self.clock = pygame.time.Clock()
         self.delta_time = 0
-        self.font = pygame.font.Font("assets/PixelCode-Light.ttf", 20)
+        self.font = pygame.font.Font("assets/fonts/PixelCode-Light.ttf", 20)
+        # Load assets to be used -- screen needs to be initialised first !
+        self.assets = self.data_handler.LoadAssets("assets")
         
-        Textbox.SCREENW = screenW
+        # Update class global variables
+        Textbox.COLOURS = self.colours
         Textbox.SCREENH = screenH
+        Textbox.SCREENW = screenW
         Textbox.FONT = self.font
-        self.text_box = Textbox(screenW*0.96, screenH*0.5)
+        UserInterface.COLOURS = self.colours
+        UserInterface.SCREENW = screenW
+        UserInterface.SCREENH = screenH
+        UserInterface.FONT = self.font
+        UserInterface.ASSETS = self.assets
         
+        self.ui = UserInterface()
         
     def QuitGame(self):
         pygame.quit()
@@ -27,15 +41,15 @@ class App:
                 self.QuitGame()
     
     def Update(self):
-        self.text_box.Update()
+        self.ui.Update(self.delta_time)
     
     def Draw(self):
-        self.screen.fill((200, 200, 200))
-        self.text_box.Draw(self.screen)
+        self.screen.fill(self.colours["background"])
+        self.ui.Render(self.screen)
         
     def Run(self):
         while True:
-            self.delta_time = self.clock.tick(60) / 1000
+            self.delta_time = self.clock.tick(0) / 1000
             
             self.Events()
             self.Update()
