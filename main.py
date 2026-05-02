@@ -1,39 +1,49 @@
 # Import modules
 import pygame, sys, time
+from scripts import *
 
-class app:
+class App:
     def __init__(self):
-        self.screen = pygame.display.set_mode((500, 500))
+        screenW, screenH = 500, 500
+        self.screen = pygame.display.set_mode((screenW, screenH))
         pygame.display.set_caption("Revision")
         self.clock = pygame.time.Clock()
         self.delta_time = 0
+        self.font = pygame.font.Font("assets/PixelCode-Light.ttf", 20)
         
-    def quit_game(self):
+        Textbox.SCREENW = screenW
+        Textbox.SCREENH = screenH
+        Textbox.FONT = self.font
+        self.text_box = Textbox(screenW*0.96, screenH*0.5)
+        
+        
+    def QuitGame(self):
         pygame.quit()
         sys.exit()
         
-    def events(self):
+    def Events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                self.quit_game()
+                self.QuitGame()
     
-    def update(self):
-        pass
+    def Update(self):
+        self.text_box.Update()
     
-    def draw(self):
-        self.screen.fill((25, 25, 25))
+    def Draw(self):
+        self.screen.fill((200, 200, 200))
+        self.text_box.Draw(self.screen)
         
-    def run(self):
+    def Run(self):
         while True:
             self.delta_time = self.clock.tick(60) / 1000
             
-            self.events()
-            self.update()
-            self.draw()
+            self.Events()
+            self.Update()
+            self.Draw()
             
             pygame.display.flip()
         
     
 if __name__ == "__main__":
-    a = app()
-    a.run()
+    a = App()
+    a.Run()
