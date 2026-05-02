@@ -7,6 +7,11 @@ class DataHandler:
         # Variable to track the amount of data loaded
         self.total_loaded = 0
     
+    # Save to json file from dictionary
+    def SaveJSON(self, path, data):
+        with open(path, "w") as f:
+            json.dump(data, f, indent=4, ensure_ascii=False)
+    
     # Make a generic subroutine to load data from files  -  JSON
     def LoadJSON(self, path):
         # Check if the file exists

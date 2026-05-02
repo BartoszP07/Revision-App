@@ -95,6 +95,7 @@ class SettingsScreen(Screen):
             sliderShadowOffset=(-2, 2), sliderbarShadowOffset=(-2, 2))
         
         self.exit_settings = False
+        self.save_settings = False
 
     def UpdateColours(self):
         self.window_surf = self.CreateAASurf(SettingsScreen.SCREENW*0.9,
@@ -114,6 +115,7 @@ class SettingsScreen(Screen):
     def SaveColours(self):
         for key, value in self.changed_colours.items():
             SettingsScreen.COLOURS[key] = value
+        self.save_settings = True
         self.UpdateColours()
 
     def CreateAASurf(self, width, height, alpha=255):

@@ -20,7 +20,6 @@ class App:
         self.assets = self.data_handler.LoadAssets("assets")
         
         # Update class global variables
-        
         Textbox.SCREENH = screenH
         Textbox.SCREENW = screenW
         Textbox.FONT = self.font
@@ -46,6 +45,12 @@ class App:
     def Update(self):
         self.ui.Update(self.delta_time)
         self.ui.text_box.UpdateColours()
+        
+        # Check if the settings should be saved
+        if self.ui.settings_screen.save_settings:
+            self.ui.settings_screen.save_settings = False
+            self.data_handler.SaveJSON("data/colours.json", self.colours)
+            
     
     def Draw(self):
         self.screen.fill(self.colours["background"])
