@@ -37,8 +37,7 @@ class Textbox:
         return aa_surf.convert_alpha()
         
     # Subroutine to update the colours
-    def UpdateColours(self, new_colours):
-        Textbox.COLOURS = new_colours
+    def UpdateColours(self):
         self.surf = self.CreateAASurf(self.width, self.height)
         self.shadow_surf = self.CreateAASurf(self.width*1.02, self.height*1.035, 100)
         self.text.colours = {"text": Textbox.COLOURS["text"]}
@@ -48,6 +47,7 @@ class Textbox:
         self.text.update()
         self.text.ChangePosition(self.surf_position.x+self.surf.get_width()/2-self.text.textObj.get_width()/2,
                                  self.surf_position.y+self.surf.get_height()/2-self.text.textObj.get_height()/2)
+        self.text.changeText("Click To Reveal")
     
     # Draw the textbox
     def Draw(self, screen):

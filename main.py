@@ -15,19 +15,22 @@ class App:
         self.clock = pygame.time.Clock()
         self.delta_time = 0
         self.font = pygame.font.Font("assets/fonts/PixelCode-Light.ttf", 20)
+        self.small_font = pygame.font.Font("assets/fonts/PixelCode-Light.ttf", 15)
         # Load assets to be used -- screen needs to be initialised first !
         self.assets = self.data_handler.LoadAssets("assets")
         
         # Update class global variables
-        Textbox.COLOURS = self.colours
+        
         Textbox.SCREENH = screenH
         Textbox.SCREENW = screenW
         Textbox.FONT = self.font
-        UserInterface.COLOURS = self.colours
+        Textbox.COLOURS = self.colours
         UserInterface.SCREENW = screenW
         UserInterface.SCREENH = screenH
         UserInterface.FONT = self.font
         UserInterface.ASSETS = self.assets
+        UserInterface.COLOURS = self.colours
+        SettingsScreen.SMALLFONT = self.small_font
         
         self.ui = UserInterface()
         
@@ -42,6 +45,7 @@ class App:
     
     def Update(self):
         self.ui.Update(self.delta_time)
+        self.ui.text_box.UpdateColours()
     
     def Draw(self):
         self.screen.fill(self.colours["background"])

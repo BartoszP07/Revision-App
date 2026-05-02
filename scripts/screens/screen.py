@@ -8,6 +8,7 @@ class Screen:
         # Create all neccessary variables for widgets
         self.buttons = {}
         self.texts = {}
+        self.sliderbars = {}
         # Create variable to use to see if the first frame of the screen has loaded
         self.has_loaded = False
         # Create a rect for the mouse
@@ -22,6 +23,8 @@ class Screen:
             btn.update([self.mouse], pygame.mouse.get_pressed() == (1, 0, 0))
         for txt in self.texts.values():
             txt.update()
+        for bar in self.sliderbars.values():
+            bar.update({"multX": 1, "multY": 1}, self.mouse)
         
     # Subroutine to render the widgets
     def RenderWidgets(self, screen):
@@ -30,3 +33,5 @@ class Screen:
             btn.draw(screen)
         for txt in self.texts.values():
             txt.draw(screen)
+        for bar in self.sliderbars.values():
+            bar.draw(screen)

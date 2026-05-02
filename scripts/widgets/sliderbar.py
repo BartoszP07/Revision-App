@@ -6,7 +6,7 @@ import pygame
 class Sliderbar:
     # Use a constructor to initalise the class
     def __init__(self, settings,
-                x=600,y=300,width=300,height=50,colours=((255,255,255),(255,0,0),(255,255,255)),font=pygame.font.SysFont(None,32),
+                x=600,y=300,width=300,height=50,colours=[(255,255,255),(255,0,0),(255,255,255)],font=pygame.font.SysFont(None,32),
                 label="sliderbar",labelShadow=True,labelPosition="left",labelOffset=(-20,0),
                 showValue=True,valueShadow=True,valuePosition="right",valueOffset=(20,0),
                 sliderWidth=40,sliderHeight=45,sliderShadow=True,
@@ -312,6 +312,9 @@ class Sliderbar:
         self.valueText = self.createText(255, str(self.value))
         self.valueTextShadow = self.createText(100, str(self.value))
         self.valuePosition = self.convertLabelAxis(self.originalValuePosition, self.valueText)
+    
+        self.text = self.createText(255, self.label)
+        self.textShadow = self.createText(100, self.label)
     
     # Subroutine to return the value of the sliderbar
     def getValue(self):

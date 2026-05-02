@@ -27,7 +27,7 @@ class Widget:
         self.posY = posY    
         self.width = width
         self.height = height
-        self.colours = colours
+        self.colours = colours.copy()
         if "col1" in colours.keys():
             self.colour = colours["col1"]
         else:
