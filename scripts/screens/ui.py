@@ -21,6 +21,18 @@ class UserInterface(Screen):
             text="", posX=UserInterface.SCREENW*0.005, posY=UserInterface.SCREENH*0.93,
             command=self.ShowSettings)
         
+        self.buttons["previous"] = Button(
+            posX=UserInterface.SCREENW*0.02, posY=UserInterface.SCREENH*0.55,
+            width=120, height=25, font=UserInterface.FONT, text="Previous",
+            curve=15, textShadowOffset=(-1, 1)
+        )
+        
+        self.buttons["next"] = Button(
+            posX=UserInterface.SCREENW*0.74, posY=UserInterface.SCREENH*0.55,
+            width=120, height=25, font=UserInterface.FONT, text="Next",
+            curve=15, textShadowOffset=(-1, 1)
+        )
+        
         self.in_settings = False
         
         SettingsScreen.SCREENW = UserInterface.SCREENW
@@ -35,6 +47,8 @@ class UserInterface(Screen):
         
     # Subroutine to update the screen
     def Update(self, delta_time):
+        for btn in self.buttons.values():
+            btn.colours["col1"] = UserInterface.COLOURS["accent"]
         if not self.in_settings:
             self.UpdateWidgets(delta_time)
             self.text_box.Update()
@@ -44,7 +58,6 @@ class UserInterface(Screen):
         if self.settings_screen.exit_settings == True and self.in_settings:
             self.in_settings = False
             self.settings_screen.exit_settings = False
-        
         
     # Subroutine to render the screen
     def Render(self, screen):

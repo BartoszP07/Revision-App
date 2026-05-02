@@ -50,7 +50,6 @@ class App:
         if self.ui.settings_screen.save_settings:
             self.ui.settings_screen.save_settings = False
             self.data_handler.SaveJSON("data/colours.json", self.colours)
-            
     
     def Draw(self):
         self.screen.fill(self.colours["background"])

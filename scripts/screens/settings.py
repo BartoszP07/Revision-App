@@ -144,7 +144,7 @@ class SettingsScreen(Screen):
             if key.lower() == self.current_colour.lower():
                 btn.colours["col1"] = (0, 150, 0)
             else:
-                btn.colours["col1"] = (150, 0, 0)
+                btn.colours["col1"] = SettingsScreen.COLOURS["accent"]
                 
         for bar in self.sliderbars.values():
             if sum(SettingsScreen.COLOURS["card-background"])/3 > 200:
