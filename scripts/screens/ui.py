@@ -11,6 +11,7 @@ class UserInterface(Screen):
     COLOURS = None
     ASSETS = None
     CARDS = None
+    SMALLFONT = None
     # Initialise the class
     def __init__(self):
         # Initialise the parent class
@@ -45,10 +46,18 @@ class UserInterface(Screen):
         self.settings_screen = SettingsScreen()
         
         self.question_idx = 0
-        self.topic = random.choice(list(UserInterface.CARDS.keys()))
+        self.topics = list(UserInterface.CARDS.keys())
+        self.topic = random.choice(self.topics)
         self.total_questions = len(list(UserInterface.CARDS[self.topic].keys()))
         self.question = list(UserInterface.CARDS[self.topic].keys())[self.question_idx]
         self.answer = UserInterface.CARDS[self.topic][self.question]
+        
+        self.mouseRect = pygame.Rect(0, 0, 1, 1)
+        self.topicChoiceList = Droplist({"multX":1, "multY":1},
+            currentItem="ads", font=UserInterface.SMALLFONT, textFont=UserInterface.FONT,
+            x=UserInterface.SCREENW*0.02, y=UserInterface.SCREENH*0.7,
+            width=100, height=25, items=self.topics, label="Topic",
+            textShadowOffset=(-1, 1), labelShadowOffset=(-1, 1), labelOffset=(0, 8))
 
     def ChangeQuestion(self, dir):
         self.question_idx += dir
@@ -58,18 +67,20 @@ class UserInterface(Screen):
         elif self.question_idx <= 0:
             self.question_idx = 0
             
-
     # Subroutine to show the settings
     def ShowSettings(self):
         self.in_settings = True
         
     # Subroutine to update the screen
     def Update(self, delta_time):
+        self.mouseRect.topleft = pygame.mouse.get_pos()
         for btn in self.buttons.values():
             btn.colours["col1"] = UserInterface.COLOURS["accent"]
+        self.topicChoiceList.colours[0] = UserInterface.COLOURS["accent"]
         if not self.in_settings:
             self.UpdateWidgets(delta_time)
             self.text_box.Update()
+            self.topicChoiceList.update(self.mouseRect)
         else:
             self.settings_screen.Update(delta_time)
         
@@ -80,6 +91,7 @@ class UserInterface(Screen):
         self.text_box.answer_txt = self.answer
         self.text_box.question_txt = self.question
         
+        self.topic = self.topicChoiceList.currentItem
         self.total_questions = len(list(UserInterface.CARDS[self.topic].keys()))
         self.question = list(UserInterface.CARDS[self.topic].keys())[self.question_idx]
         self.answer = UserInterface.CARDS[self.topic][self.question]
@@ -88,6 +100,8 @@ class UserInterface(Screen):
     def Render(self, screen):
         self.text_box.Draw(screen)
         self.RenderWidgets(screen)
+        
+        self.topicChoiceList.draw(screen)
         
         if self.in_settings:
             self.settings_screen.Render(screen)

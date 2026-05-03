@@ -33,14 +33,22 @@ class SettingsScreen(Screen):
             100, 100
         )
         
+        btnCols = {
+            "col1": SettingsScreen.COLOURS["accent"],
+            "col2": (100, 100, 100),
+            "col3": (255, 255, 255),
+            "border": (200, 0, 0),
+            "text": (255, 255, 255)
+        }
+        
         self.buttons["return"] = Button(posX=100, posY=400, text="Return",
                 width=100, height=35, command=self.Return,
                 font=SettingsScreen.FONT, textShadowOffset=(-1, 1),
-                curve=20)
+                curve=20, colours=btnCols)
         self.buttons["save"] = Button(posX=300, posY=400, text="Save",
                 width=100, height=35, font=SettingsScreen.FONT,
                 textShadowOffset=(-1, 1), curve=20,
-                command=self.SaveColours)
+                command=self.SaveColours, colours=btnCols)
         
         btn_w = 90
         btn_h = 25
@@ -52,19 +60,19 @@ class SettingsScreen(Screen):
         self.buttons["background"] = Button(width=btn_w, height=btn_h,
             posX=btn_x+btn_w*0+pad_x*0, font=SettingsScreen.SMALLFONT, text="bg",
             posY=btn_y, textShadowOffset=(-1, 1), curve=15, command=self.ChangeColour,
-            parameters=["background"])
+            parameters=["background"], colours=btnCols)
         self.buttons["card-background"] = Button(width=btn_w, height=btn_h,
             posX=btn_x+btn_w*1+pad_x*1, font=SettingsScreen.SMALLFONT, text="card bg",
             posY=btn_y, textShadowOffset=(-1, 1), curve=15, command=self.ChangeColour,
-            parameters=["card-background"])
+            parameters=["card-background"], colours=btnCols)
         self.buttons["text"] = Button(width=btn_w, height=btn_h,
             posX=btn_x+btn_w*2+pad_x*2, font=SettingsScreen.SMALLFONT, text="text",
             posY=btn_y, textShadowOffset=(-1, 1), curve=15, command=self.ChangeColour,
-            parameters=["text"])
+            parameters=["text"], colours=btnCols)
         self.buttons["accent"] = Button(width=btn_w, height=btn_h,
             posX=btn_x+btn_w*3+pad_x*3, font=SettingsScreen.SMALLFONT, text="accent",
             posY=btn_y, textShadowOffset=(-1, 1), curve=15, command=self.ChangeColour,
-            parameters=["accent"])
+            parameters=["accent"], colours=btnCols)
         
         sliderStartY = 240
         sliderSpacing = 10
@@ -96,6 +104,7 @@ class SettingsScreen(Screen):
         
         self.exit_settings = False
         self.save_settings = False
+        self.Update(1)
 
     def UpdateColours(self):
         self.window_surf = self.CreateAASurf(SettingsScreen.SCREENW*0.9,

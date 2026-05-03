@@ -20,6 +20,8 @@ class App:
         # Load assets to be used -- screen needs to be initialised first !
         self.assets = self.data_handler.LoadAssets("assets")
         
+        self.mouse_rect = pygame.Rect(0, 0, 1, 1)
+        
         # Update class global variables
         Textbox.SCREENH = screenH
         Textbox.SCREENW = screenW
@@ -31,6 +33,7 @@ class App:
         UserInterface.ASSETS = self.assets
         UserInterface.COLOURS = self.colours
         UserInterface.CARDS = self.flash_cards
+        UserInterface.SMALLFONT = self.small_font
         SettingsScreen.SMALLFONT = self.small_font
         
         self.ui = UserInterface()
@@ -53,10 +56,15 @@ class App:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.QuitGame()
+            if event.type == pygame.MOUSEWHEEL:
+                self.ui.topicChoiceList.scrollMouse(event, self.delta_time,
+                                                    self.mouse_rect)
     
     def Update(self):
         self.ui.Update(self.delta_time)
         self.ui.text_box.UpdateColours()
+        
+        self.mouse_rect.topleft = pygame.mouse.get_pos()
         
         # Check if the settings should be saved
         if self.ui.settings_screen.save_settings:
