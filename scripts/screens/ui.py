@@ -57,7 +57,8 @@ class UserInterface(Screen):
             currentItem="ads", font=UserInterface.SMALLFONT, textFont=UserInterface.FONT,
             x=UserInterface.SCREENW*0.02, y=UserInterface.SCREENH*0.7,
             width=100, height=25, items=self.topics, label="Topic",
-            textShadowOffset=(-1, 1), labelShadowOffset=(-1, 1), labelOffset=(0, 8))
+            textShadowOffset=(-1, 1), labelShadowOffset=(-1, 1),
+            scrollbarWidth=5, labelSpacing=13, curve=15)
 
     def ChangeQuestion(self, dir):
         self.question_idx += dir
