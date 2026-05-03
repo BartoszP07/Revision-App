@@ -1,5 +1,5 @@
 # Import modules
-import pygame, sys, time
+import pygame, sys, os
 from scripts import *
 from scripts.screens import *
 
@@ -9,6 +9,7 @@ class App:
         self.data_handler = DataHandler()
         # Load colours to be used
         self.colours = self.data_handler.LoadJSON("data/colours.json")
+        self.flash_cards = self.LoadFlashCards("data/topics/")
         screenW, screenH = 500, 500
         self.screen = pygame.display.set_mode((screenW, screenH))
         pygame.display.set_caption("Revision")
@@ -29,9 +30,20 @@ class App:
         UserInterface.FONT = self.font
         UserInterface.ASSETS = self.assets
         UserInterface.COLOURS = self.colours
+        UserInterface.CARDS = self.flash_cards
         SettingsScreen.SMALLFONT = self.small_font
         
         self.ui = UserInterface()
+        
+    def LoadFlashCards(self, path):
+        cards = {}
+        for _, _, files in os.walk(path):
+            for file in files:
+                file_name = file.split(".")[0]
+                data = self.data_handler.LoadJSON(f"{path}/{file}")
+                cards[file_name] = data
+
+        return cards
         
     def QuitGame(self):
         pygame.quit()

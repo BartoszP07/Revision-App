@@ -38,6 +38,8 @@ class Text(Widget):
         self.backgroundShadowAlpha = backgroundShadowAlpha
         self.backgroundShadow = backgroundShadow
         self.backgroundColour = backgroundColour
+        self.totalTextHeight = 0
+        self.totalTextWidth = 0
 
     # Procedure to change the text
     def changeText(self, text):
@@ -54,12 +56,33 @@ class Text(Widget):
     # Procedure to update the text
     def childUpdate(self):
         self.textObjs = []
+        self.totalTextWidth = 0
+        self.totalTextHeight = 0
+        
         # Check if the \n is in the text
         if "\n" in self.text:
             # Split the text into lines
             lines = self.text.split("\n")
             for line in lines:
-                self.textObjs.append((self.createTextSurface(self.alpha, line), self.createTextSurface(self.shadowAlpha, line)))
+                textObj = self.createTextSurface(self.alpha, line)
+                textShadowObj = self.createTextSurface(self.shadowAlpha, line)
+                self.textObjs.append((textObj, textShadowObj))
+                
+                # 1. Calculate Max Width: See if this line is wider than our current max
+                if textObj.get_width() > self.totalTextWidth:
+                    self.totalTextWidth = textObj.get_width()
+                
+                # 2. Calculate Max Height: Add this line's height to the total
+                self.totalTextHeight += textObj.get_height()
+            
+            # Add the line spacing to the total height (only between lines, so lines - 1)
+            if len(lines) > 1:
+                self.totalTextHeight += (len(lines) - 1) * (self.textLineSpacing * self.multY)
+                
+        else:
+            # If it's just a single line of text, the total size is just the base object's size
+            self.totalTextWidth = self.textObj.get_width()
+            self.totalTextHeight = self.textObj.get_height()
 
     # Procedure to draw the text - overrides the parent class draw method
     def draw(self, screen):

@@ -1,0 +1,6 @@
+{
+    "What is a stack?": 
+    "A data structure that is based on the First In Last Out (FILO) structure, so the first element in is the last element out",
+    "What is a queue?":
+    "A data structure that is based on the First In First Out (FIFO) structure, so the first element in is the firts element out"
+}

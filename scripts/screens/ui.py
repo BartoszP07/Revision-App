@@ -1,5 +1,5 @@
 # Import modules
-import pygame
+import pygame, random
 from scripts.widgets import *
 from scripts.screens import *
 from scripts.text_box import Textbox
@@ -10,6 +10,7 @@ class UserInterface(Screen):
     FONT = None
     COLOURS = None
     ASSETS = None
+    CARDS = None
     # Initialise the class
     def __init__(self):
         # Initialise the parent class
@@ -24,13 +25,15 @@ class UserInterface(Screen):
         self.buttons["previous"] = Button(
             posX=UserInterface.SCREENW*0.02, posY=UserInterface.SCREENH*0.55,
             width=120, height=25, font=UserInterface.FONT, text="Previous",
-            curve=15, textShadowOffset=(-1, 1)
+            curve=15, textShadowOffset=(-1, 1), command=self.ChangeQuestion,
+            parameters=[-1]
         )
         
         self.buttons["next"] = Button(
             posX=UserInterface.SCREENW*0.74, posY=UserInterface.SCREENH*0.55,
             width=120, height=25, font=UserInterface.FONT, text="Next",
-            curve=15, textShadowOffset=(-1, 1)
+            curve=15, textShadowOffset=(-1, 1), command=self.ChangeQuestion,
+            parameters=[1]
         )
         
         self.in_settings = False
@@ -40,6 +43,21 @@ class UserInterface(Screen):
         SettingsScreen.FONT = UserInterface.FONT
         SettingsScreen.COLOURS = UserInterface.COLOURS
         self.settings_screen = SettingsScreen()
+        
+        self.question_idx = 0
+        self.topic = random.choice(list(UserInterface.CARDS.keys()))
+        self.total_questions = len(list(UserInterface.CARDS[self.topic].keys()))
+        self.question = list(UserInterface.CARDS[self.topic].keys())[self.question_idx]
+        self.answer = UserInterface.CARDS[self.topic][self.question]
+
+    def ChangeQuestion(self, dir):
+        self.question_idx += dir
+        self.text_box.card_side = "question"
+        if self.question_idx >= self.total_questions:
+            self.question_idx = self.total_questions-1
+        elif self.question_idx <= 0:
+            self.question_idx = 0
+            
 
     # Subroutine to show the settings
     def ShowSettings(self):
@@ -58,6 +76,13 @@ class UserInterface(Screen):
         if self.settings_screen.exit_settings == True and self.in_settings:
             self.in_settings = False
             self.settings_screen.exit_settings = False
+            
+        self.text_box.answer_txt = self.answer
+        self.text_box.question_txt = self.question
+        
+        self.total_questions = len(list(UserInterface.CARDS[self.topic].keys()))
+        self.question = list(UserInterface.CARDS[self.topic].keys())[self.question_idx]
+        self.answer = UserInterface.CARDS[self.topic][self.question]
         
     # Subroutine to render the screen
     def Render(self, screen):
