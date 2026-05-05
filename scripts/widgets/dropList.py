@@ -345,6 +345,9 @@ class Droplist:
         if self.isopen:
             # Check if the content shadow should be drawn
             if self.listShadow:
+                self.contentSurfShadow.fill(self.colours[0])
+                # Set the alpha for the shadow
+                self.contentSurfShadow.set_alpha(self.shadowAlpha)
                 # Draw the shadow
                 screen.blit(self.contentSurfShadow, (self.x+self.listShadowOffset[0], self.y+self.height+self.listShadowOffset[1]))
             # Make the surface transparrent
